@@ -25,7 +25,9 @@ def signature():
     if not data:
         return jsonify({"error": "No JSON body received"}), 400
 
-    # Debug data yang diterima
+    # Pastikan data bentuk dict agar .get() work
+    if not isinstance(data, dict):
+        data = dict(data)
     print("FINAL DATA (used for parsing):", data)
 
     # Ambil parameter
@@ -43,5 +45,6 @@ def signature():
     message = f"{method}:{path}:{timestamp}"
     sig = hmac.new(secret.encode(), message.encode(), hashlib.sha256).digest()
     return jsonify({"signature": base64.b64encode(sig).decode()})
+
 
 app = app  # for Vercel
